@@ -16,6 +16,7 @@ from pathlib import Path
 
 import environ
 from django.contrib.messages import constants as messages
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +33,7 @@ env = environ.Env(
     ALLOWED_HOSTS=(list, ["*"]),
     CSRF_TRUSTED_ORIGINS=(list, ["http://localhost:8000"]),
 )
+
 
 env.read_env(os.path.join(BASE_DIR, ".env"), overwrite=True)
 
@@ -135,6 +137,10 @@ else:
             "PORT": env("DB_PORT", default=""),
         }
     }
+
+# Update database configuration with $DATABASE_URL.
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
